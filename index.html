@@ -868,29 +868,17 @@ footer.f{ background:#0f151d; color:#c4ccd6; padding:clamp(44px,6vw,66px) 0 34px
 /* ===== YouTube facade — click पर ही iframe load (Error 153 से बचाव + तेज़) ===== */
 (function(){
   var f=document.getElementById('ytFacade'); if(!f) return;
-  var loaded=false, playing=true;
-  function cmd(func){                // YouTube JS API से play/pause control
-    var ifr=f.querySelector('iframe');
-    if(ifr&&ifr.contentWindow) ifr.contentWindow.postMessage(JSON.stringify({event:'command',func:func,args:[]}),'*');
-  }
+  var loaded=false;
   function play(){
     if(loaded) return;              // पहले से load है — दोबारा inject मत करो (वरना pause की जगह reload/blank)
     loaded=true;
     var id=f.getAttribute('data-yt');
-    var origin=encodeURIComponent(location.origin);
-    // Short player tap को blank कर देता है — इसलिए iframe के ऊपर अपना transparent play/pause button
-    f.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0&playsinline=1&controls=1&enablejsapi=1&origin='+origin+'" title="Smart Buyer Network क्या है" style="width:100%;height:100%;border:0;display:block" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>'
-      +'<button type="button" class="yt-toggle" aria-label="Play/Pause वीडियो" style="position:absolute;inset:0;width:100%;height:100%;background:transparent;border:0;cursor:pointer;z-index:3;-webkit-tap-highlight-color:transparent"></button>'
-      +'<span class="yt-picon" aria-hidden="true" style="position:absolute;inset:0;display:none;align-items:center;justify-content:center;z-index:2;pointer-events:none"><span style="width:66px;height:66px;border-radius:50%;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center"><svg width="28" height="28" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></span></span>';
+    f.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0&playsinline=1&controls=1" title="Smart Buyer Network क्या है" style="width:100%;height:100%;border:0;display:block" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
+    // native player अब पूरा control करता है — इसलिए हमारा dark scrim (.video-ph::after) और cursor हटाओ
+    f.classList.remove('video-ph');
     f.style.cursor='default';
     f.removeEventListener('click',play); f.removeEventListener('keydown',onKey);
     f.removeAttribute('role'); f.removeAttribute('tabindex');
-    var picon=f.querySelector('.yt-picon');
-    f.querySelector('.yt-toggle').addEventListener('click',function(){
-      playing=!playing;
-      cmd(playing?'playVideo':'pauseVideo');
-      picon.style.display=playing?'none':'flex';   // paused पर play-icon दिखे
-    });
   }
   function onKey(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); play(); } }
   f.addEventListener('click',play);
