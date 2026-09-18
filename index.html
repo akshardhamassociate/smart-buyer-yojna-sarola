@@ -371,9 +371,14 @@ footer.f{ background:#0f151d; color:#c4ccd6; padding:clamp(44px,6vw,66px) 0 34px
   *,*::before,*::after{ animation-duration:.01ms !important; transition-duration:.01ms !important; }
   .rv{ opacity:1; transform:none; } .scrollcue,.fab .f-wa::after{ animation:none; } html{ scroll-behavior:auto; }
 }
+/* रेफरल banner */
+.ref-banner{ display:none; text-align:center; padding:11px 16px; font-size:14px; font-weight:700; color:#fff; background:var(--grad); line-height:1.45; }
+.ref-banner b{ font-weight:800; }
 </style>
 </head>
 <body>
+<!-- रेफरल banner — सिर्फ़ ?ref= वाले link से खुलने पर दिखता है (जिसने invite किया उसका नाम) -->
+<div id="refBanner" class="ref-banner" role="status"></div>
 
 <!-- =====================================================================
      🏙️  LOCATION TEMPLATE  —  नई location (खानपुर/कोटा आदि) के लिए यह file COPY करके ये बदलें:
@@ -887,10 +892,16 @@ footer.f{ background:#0f151d; color:#c4ccd6; padding:clamp(44px,6vw,66px) 0 34px
 
 /* ===== LEAD FORM → Google Sheet + Referral Link ===== */
 (function(){
-  var WEBHOOK='https://script.google.com/macros/s/AKfycbxkGdzKizGhJ3dlGfjV_atRY4EZc__wSrUmHKTvD9KR4C4Zym6W5sJVb2duMOJJWOs7Xg/exec';
-  var REF_BASE='https://akshardhamassociate.github.io/Smart-buyer-yojna-referral/';
+  // ⚠️ नई अलग Sheet का Apps Script URL यहाँ डालें (सारोला के अपने leads के लिए — पूरी तरह separate sheet)
+  var WEBHOOK='https://script.google.com/macros/s/AKfycbz7-4yYBH4cuJnbMkFOOXafQjGpop_yv8FBov-j4Ubq9KlghE6Lu22LjsmZo8Ej1yeG/exec';
+  var REF_BASE='https://akshardhamassociate.github.io/smart-buyer-yojna-sarola/';   // link अब सारोला page पर ही खुलेगा
   var form=document.getElementById('leadForm'); if(!form) return;
   var params=new URLSearchParams(location.search), done=false;
+  // रेफरल banner — जिसने invite किया उसका नाम ऊपर दिखाओ
+  (function(){ var rn=params.get('n'); if(!rn) return; var b=document.getElementById('refBanner'); if(!b) return;
+    var nm=decodeURIComponent(rn).replace(/[<>]/g,'').trim(); if(!nm) return;
+    b.innerHTML='🎉 <b>'+nm+'</b> ने आपको सारोला Smart Buyer Network में आमंत्रित किया है'; b.style.display='block';
+  })();
   function slugify(n){ return (n||'').trim().toLowerCase().replace(/[^a-z0-9ऀ-ॿ]/g,''); }
   function val(id){ var el=document.getElementById(id); return el?(el.value||'').trim():''; }
   function setErr(id,show){ var e=document.querySelector('.err[data-for="'+id+'"]'); if(e)e.style.display=show?'block':'none'; }
@@ -923,7 +934,7 @@ footer.f{ background:#0f151d; color:#c4ccd6; padding:clamp(44px,6vw,66px) 0 34px
     var data={ timestamp:new Date().toISOString(), name:name, mobile:phone,
       occupation:val('f_occupation'), address:val('f_address'), location:loc,
       specificLocation:val('f_specific'), budget:budget, plotSize:((w||l)?(w+' x '+l):''),
-      comment:cmt, yojna:'Smart Buyer Network',
+      comment:cmt, yojna:'Smart Buyer Network', source:'sarola',
       referredByCode:params.get('ref')||'', referredByName:params.get('n')?decodeURIComponent(params.get('n')):'',
       myReferralCode:myCode, myReferralLink:myLink };
     var btn=document.getElementById('leadSubmit'); btn.disabled=true; btn.textContent='भेजा जा रहा है...';
