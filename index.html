@@ -15,10 +15,11 @@
 <meta property="og:image:type" content="image/jpeg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta name="twitter:image" content="https://akshardhamassociate.github.io/smart-buyer-yojna-sarola/og.jpg">
+<meta property="og:image:alt" content="सारोला में प्लॉट — Akshardham Associates">
 <meta property="og:url" content="https://akshardhamassociate.github.io/smart-buyer-yojna-sarola/">
 <meta property="og:site_name" content="Akshardham Associates">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://akshardhamassociate.github.io/smart-buyer-yojna-sarola/og.jpg">
 
 <!-- =====================================================================
      📊 TRACKING SETUP — नीचे 2 ID अपनी असली ID से बदलें (एक बार):
@@ -594,7 +595,7 @@ footer.f{ background:#0f151d; color:#c4ccd6; padding:clamp(44px,6vw,66px) 0 34px
 
 <!-- ===================== बीच का बैनर ===================== -->
 <div class="wrap" style="margin:clamp(28px,5vw,56px) auto 0">
-  <div class="rv" style="position:relative;width:100%;border-radius:22px;overflow:hidden;aspect-ratio:24/9;box-shadow:var(--sh2);min-height:180px">
+  <div class="rv img-to-form" style="position:relative;width:100%;border-radius:22px;overflow:hidden;aspect-ratio:24/9;box-shadow:var(--sh2);min-height:180px;cursor:pointer">
     <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1400&q=80&auto=format&fit=crop" alt="सारोला में सपनों का प्लॉट" loading="lazy" decoding="async" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover">
     <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(12,16,22,.82) 0%,rgba(12,16,22,.45) 45%,transparent 75%);display:flex;align-items:center;padding:0 clamp(22px,5vw,56px)">
       <div style="color:#fff;max-width:30ch">
@@ -931,7 +932,7 @@ footer.f{ background:#0f151d; color:#c4ccd6; padding:clamp(44px,6vw,66px) 0 34px
     check('f_location', !!loc);
     if(!ok){ if(first)first.focus(); return; }
     var myCode=slugify(name)+phone.slice(-4);
-    var myLink=REF_BASE+'?ref='+encodeURIComponent(myCode)+'&n='+encodeURIComponent(name);
+    var myLink=REF_BASE+'?ref='+encodeURIComponent(myCode)+'&n='+encodeURIComponent(name)+'&t='+Date.now(); // &t = cache-buster (WhatsApp हर बार fresh image preview ले, पुराने number पर भी)
     // UTM source capture (Google/Facebook/Instagram) — comment me जोड़ दिया ताकि Sheet me दिखे
     var src=params.get('utm_source')||'', med=params.get('utm_medium')||'', camp=params.get('utm_campaign')||'';
     var cmt=val('f_comment');
@@ -951,6 +952,14 @@ footer.f{ background:#0f151d; color:#c4ccd6; padding:clamp(44px,6vw,66px) 0 34px
       .catch(function(){ showSuccess(name,myLink); });
     setTimeout(function(){ showSuccess(name,myLink); }, 2500); // fallback (no-cors opaque)
   });
+  // 🖼️ सभी property images (गैलरी + बैनर) पर click → सीधे form (#join)
+  (function(){
+    var join=document.getElementById('join'); if(!join) return;
+    document.querySelectorAll('.ph-card, .img-to-form').forEach(function(el){
+      el.style.cursor='pointer';
+      el.addEventListener('click',function(){ join.scrollIntoView({behavior:'smooth',block:'start'}); });
+    });
+  })();
   var copyBtn=document.getElementById('s_copy');
   if(copyBtn) copyBtn.addEventListener('click',function(){
     var link=document.getElementById('s_link').textContent, self=this;
