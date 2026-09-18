@@ -868,13 +868,20 @@ footer.f{ background:#0f151d; color:#c4ccd6; padding:clamp(44px,6vw,66px) 0 34px
 /* ===== YouTube facade — click पर ही iframe load (Error 153 से बचाव + तेज़) ===== */
 (function(){
   var f=document.getElementById('ytFacade'); if(!f) return;
+  var loaded=false;
   function play(){
+    if(loaded) return;            // पहले से load है — दोबारा inject मत करो (वरना pause की जगह reload/blank)
+    loaded=true;
     var id=f.getAttribute('data-yt');
     f.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+id+'?autoplay=1&rel=0" title="Smart Buyer Network क्या है" style="width:100%;height:100%;border:0;display:block" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>';
     f.style.cursor='default';
+    f.removeEventListener('click',play);
+    f.removeEventListener('keydown',onKey);
+    f.removeAttribute('role'); f.removeAttribute('tabindex');
   }
+  function onKey(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); play(); } }
   f.addEventListener('click',play);
-  f.addEventListener('keydown',function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); play(); } });
+  f.addEventListener('keydown',onKey);
 })();
 
 /* ===== LEAD FORM → Google Sheet + Referral Link ===== */
