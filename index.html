@@ -510,13 +510,13 @@ footer.f{ background:#0f151d; color:#c4ccd6; padding:clamp(44px,6vw,66px) 0 34px
       </div>
       <div class="split-body">
         <span class="kicker"><svg class="icon" style="width:14px;height:14px"><use href="#i-pin"/></svg> सारोला प्रॉपर्टी</span>
-        <h2 class="stitle">सारोला का प्रॉपर्टी मार्केट — पूरी सच्चाई</h2>
-        <p class="lead">ख़रीदने से पहले वीडियो में देखिए — सारोला में प्रॉपर्टी कहाँ है, किस रोड पर है और आज मार्केट रेट क्या चल रहा है।</p>
+        <h2 class="stitle">सारोला का प्रॉपर्टी मार्केट — पूरी रिपोर्ट</h2>
+        <p class="lead">ख़रीदने से पहले वीडियो में देखिए — सारोला में प्रॉपर्टी कहाँ है, किस रोड पर / किस कॉलोनी में है और कहाँ पर मार्केट रेट क्या चल रहा है।</p>
         <!-- ⚠️ ये connectivity असली data से भरी है। जब आपके plots की exact road/कॉलोनी के नाम पता हों तो <b>..</b> और <p>..</p> बदल दें -->
         <ul class="feat">
-          <li><span class="tick num">1</span><div><b>खानपुर रोड पर</b><p>खानपुर से सिर्फ़ ~12 किमी</p></div></li>
-          <li><span class="tick num">2</span><div><b>झालावाड़ से जुड़ा</b><p>झालावाड़ से ~31 किमी · अच्छी कनेक्टिविटी</p></div></li>
-          <li><span class="tick num">3</span><div><b>All-weather पक्की सड़क</b><p>पिनकोड 326035 · खानपुर तहसील, झालावाड़</p></div></li>
+          <li><span class="tick num">1</span><div><b>खानपुर रोड (बाईपास)</b><p>दरा एरिया</p></div></li>
+          <li><span class="tick num">2</span><div><b>तारज रोड</b><p>बाईपास</p></div></li>
+          <li><span class="tick num">3</span><div><b>खानपुर अकलेरा रोड</b><p>पुराना (ओल्ड) रोड</p></div></li>
         </ul>
       </div>
     </div>
@@ -952,10 +952,12 @@ footer.f{ background:#0f151d; color:#c4ccd6; padding:clamp(44px,6vw,66px) 0 34px
       .catch(function(){ showSuccess(name,myLink); });
     setTimeout(function(){ showSuccess(name,myLink); }, 2500); // fallback (no-cors opaque)
   });
-  // 🖼️ सभी property images (गैलरी + बैनर) पर click → सीधे form (#join)
+  // 🖼️ property images + खाली video placeholders पर click → सीधे form (#join)
+  //    real YouTube (ytFacade) और जिनमें असली <video> लग जाए वो अपने-आप skip हो जाते हैं
   (function(){
     var join=document.getElementById('join'); if(!join) return;
-    document.querySelectorAll('.ph-card, .img-to-form').forEach(function(el){
+    document.querySelectorAll('.ph-card, .img-to-form, .video-ph, .vt-card').forEach(function(el){
+      if(el.id==='ytFacade' || el.querySelector('video')) return; // असली video वाले छोड़ दो
       el.style.cursor='pointer';
       el.addEventListener('click',function(){ join.scrollIntoView({behavior:'smooth',block:'start'}); });
     });
